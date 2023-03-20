@@ -1,0 +1,24 @@
+{
+  "name": "whatsapp_clone",
+  "version": "1.0.0",
+  "description": "chat_app",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon backend/server.js"
+  },
+  "author": "Anshika Chaurasiya",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "colors": "^1.4.0",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-async-handler": "^1.2.0",
+    "jsonwebtoken": "^9.0.0",
+    "localforage": "^1.10.0",
+    "match-sorter": "^6.3.1",
+    "mongoose": "^7.0.1",
+    "nodemon": "^2.0.21",
+    "sort-by": "^1.2.0"
+  }
+}
