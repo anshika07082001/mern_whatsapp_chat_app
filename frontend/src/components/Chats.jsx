@@ -27,7 +27,6 @@ const Chats = () => {
             Authorization: `Bearer ${user.token}`,
           },
         };
-
         const { data } = await axios.get(`/api/user?search=${val}`, config);
         setSearchedUser(data);
       } catch (error) {
@@ -39,7 +38,6 @@ const Chats = () => {
   };
 
   const accessChat = async (userId) => {
-    alert();
     try {
       const config = {
         headers: {
@@ -49,9 +47,9 @@ const Chats = () => {
       };
 
       const { data } = await axios.post("/api/chat", { userId }, config);
-      console.log(data);
       if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
       setSelectedChat(data);
+      setSearchedUser([]);
     } catch (error) {
       console.log(error);
     }
@@ -66,7 +64,6 @@ const Chats = () => {
       };
 
       const { data } = await axios.get("/api/chat", config);
-      console.log(data);
       setChats(data);
     } catch (error) {
       console.log(error);
@@ -82,10 +79,20 @@ const Chats = () => {
     return users[0]._id === loggedUser._id ? users[1].name : users[0].name;
   };
   const getAvatar = (loggedUser, users) => {
-    return users[0]._id === loggedUser._id ? users[1].pic : users[0].pic;
+    if (users.isGroupChat) {
+      return "https://cdn-icons-png.flaticon.com/512/1870/1870051.png";
+    } else {
+      return users.users[0]._id === loggedUser._id
+        ? users.users[1].pic
+        : users.users[0].pic;
+    }
   };
+  const selectChat = (chat) => {
+    setSelectedChat(chat);
+  };
+
   return (
-    <div className="col-3">
+    <div className="col-3 border-end  border-secondary-subtle">
       <UserNavbar />
       <Tooltip title="Search Users">
         <Form className="p-2" onSubmit={searchHandler}>
@@ -115,10 +122,11 @@ const Chats = () => {
         )}
       </List>
       {chats ? (
-        <List overflowY="scroll">
+        <Box sx={{ height: "80vh", overflowY: "scroll" }}>
           {chats.map((chat) => {
             return (
               <Box
+                onClick={() => selectChat(chat)}
                 className="btn__color"
                 cursor="pointer"
                 sx={{
@@ -131,7 +139,7 @@ const Chats = () => {
                 background={selectedChat === chat ? "pink" : "grey"}
                 key={chat._id}
               >
-                <Avatar src={getAvatar(loggedUser, chat.users)} />
+                <Avatar src={getAvatar(loggedUser, chat)} />
                 <Typography>
                   {!chat.isGroupChat
                     ? getSender(loggedUser, chat.users)
@@ -140,7 +148,7 @@ const Chats = () => {
               </Box>
             );
           })}
-        </List>
+        </Box>
       ) : (
         <></>
       )}

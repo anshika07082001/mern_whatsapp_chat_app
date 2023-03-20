@@ -18,6 +18,7 @@ import GroupModal from "./GroupModal";
 
 const UserNavbar = () => {
   const { user } = ChatState();
+
   let navigate = useNavigate("/login");
   const [open, setOpen] = useState({
     menu: false,
