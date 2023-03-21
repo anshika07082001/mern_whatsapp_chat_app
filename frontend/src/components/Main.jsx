@@ -7,14 +7,6 @@ import HomePage from "./HomePage";
 import ChatPage from "./ChatPage";
 
 const Main = () => {
-  // const fetchChatsData = async () => {
-  //   // const data = await axios.get("/api/chat");
-  //   // setChatsData(data.data);
-  // };
-  // useEffect(() => {
-  //   fetchChatsData();
-  // }, []);
-  // console.log(chatsData);
   const router = createBrowserRouter([
     {
       path: "/",

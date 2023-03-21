@@ -1,3 +1,4 @@
+import { Alert, Snackbar } from "@mui/material";
 import axios from "axios";
 import React from "react";
 import { useState } from "react";
@@ -5,6 +6,7 @@ import { Button, Form } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
+  let navigate = useNavigate();
   // state for dynamic rendering of login input fields
   const [loginArr, setLoginArr] = useState([
     {
@@ -24,9 +26,21 @@ const Login = () => {
       error: false,
     },
   ]);
-  // state for showing error messages
-  const [msg, setMsg] = useState("");
-  let navigate = useNavigate();
+  // state for handling the snackbar
+  const [open, setOpen] = useState({
+    openSnack: false,
+    severity: "",
+    msg: "",
+  });
+  // function opens or closes the snackbar
+  const handleClose = () => {
+    if (open.openSnack) {
+      open.openSnack = false;
+    } else {
+      open.openSnack = true;
+    }
+    setOpen({ ...open });
+  };
   // function for setting the state of login input boxes on onchangeHandler
   const loginInpsHandler = (e) => {
     let label = e.target.getAttribute("label");
@@ -65,31 +79,42 @@ const Login = () => {
           { login, password },
           config
         );
-        setMsg("Login Sucessfully!!");
-        navigate("/");
+        open.msg = "Login Successfully!!";
+        open.severity = "success";
+        handleClose();
+        setTimeout(() => navigate("/"), 2000);
         localStorage.setItem("loginUser", JSON.stringify(data));
       } catch (error) {
-        setMsg("fill login credentials correctly!!");
-        console.log(error);
+        open.msg = error.response.data.message;
+        open.severity = "error";
+        handleClose();
       }
+      setOpen({ ...open });
       e.target.reset();
     }
   };
 
   return (
     <div className="col-10 d-flex flex-column gap-3 col-sm-8 col-lg-6 my-4 m-auto rounded ">
+      {/* rendering of snackbar */}
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={open.openSnack}
+        autoHideDuration={5000}
+        onClose={handleClose}
+      >
+        <Alert
+          onClose={handleClose}
+          severity={open.severity}
+          sx={{ width: "100%" }}
+        >
+          {open.msg}
+        </Alert>
+      </Snackbar>
       <div className="col-10 m-auto rounded">
         <h3 className="text-center p-1">Chat App</h3>
       </div>
       <Form className="col-10 m-auto p-3 rounded" onSubmit={loginHandler}>
-        {/* rendering of error messages */}
-        <p
-          className={`text-center ${
-            msg === "Login Sucessfully!!" ? "text-success" : "text-danger"
-          }`}
-        >
-          {msg}
-        </p>
         {/* dynamic rendering of login input fields */}
         {loginArr.map((item, i) => {
           return (
@@ -121,9 +146,6 @@ const Login = () => {
         <Button type="submit" className="col-12 border-0 btn__color">
           Submit
         </Button>
-        {/* <Button variant="danger" className="col-12 mt-2">
-          Get User Credentials
-        </Button> */}
       </Form>
     </div>
   );

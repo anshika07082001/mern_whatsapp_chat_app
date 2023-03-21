@@ -1,15 +1,9 @@
-import {
-  Avatar,
-  Box,
-  Button,
-  IconButton,
-  Modal,
-  Typography,
-} from "@mui/material";
+import { Box, IconButton, Modal, Typography } from "@mui/material";
 import React from "react";
 import { ChatState } from "../context/ChatProvider";
 
 const ProfileModal = (props) => {
+  // styling of modal
   const style = {
     position: "absolute",
     top: "50%",

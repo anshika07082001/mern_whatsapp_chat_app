@@ -1,3 +1,4 @@
+import { Alert, Snackbar } from "@mui/material";
 import axios from "axios";
 import React from "react";
 import { useState } from "react";
@@ -52,8 +53,21 @@ const SignUp = () => {
       "https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-image-182145777.jpg",
     error: false,
   });
-  // state for showing message
-  const [msg, setMsg] = useState("");
+  // state for handling snackbar
+  const [open, setOpen] = useState({
+    openSnack: false,
+    severity: "",
+    msg: "",
+  });
+  // function opens or closes the snackbar
+  const handleClose = () => {
+    if (open.openSnack) {
+      open.openSnack = false;
+    } else {
+      open.openSnack = true;
+    }
+    setOpen({ ...open });
+  };
   // function for setting the state of signup input boxes on onchangeHandler
   const signInpsHandler = (e) => {
     let label = e.target.getAttribute("label");
@@ -98,18 +112,19 @@ const SignUp = () => {
           { name, email, phone, password, pic: pic.value },
           config
         );
-        setMsg("Registered Successfully!!");
+        open.msg = "Registered Successfully!!";
+        open.severity = "success";
+        handleClose();
         localStorage.setItem("UserInfo", JSON.stringify(data));
         e.target.reset();
-        setTimeout(() => setMsg(""), 3000);
       } catch (error) {
         // else the error message
-        setMsg(error.response.data.message);
-        console.log(error);
+        open.msg = error.response.data.message;
+        open.severity = "error";
       }
+      setOpen({ ...open });
     }
   };
-
   // function to upload the pic with validation
   const picHandler = (e) => {
     let pics = e.target.files[0];
@@ -131,20 +146,28 @@ const SignUp = () => {
       setPic({ ...pic, error: true });
     }
   };
+
   return (
     <div className="col-10 d-flex flex-column gap-2 col-sm-8 col-lg-6 my-1 m-auto">
+      {/* rendering of snackbar */}
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={open.openSnack}
+        autoHideDuration={5000}
+        onClose={handleClose}
+      >
+        <Alert
+          onClose={handleClose}
+          severity={open.severity}
+          sx={{ width: "100%" }}
+        >
+          {open.msg}
+        </Alert>
+      </Snackbar>
       <div className="col-10 m-auto">
         <h3 className="text-center">Chat App</h3>
       </div>
       <Form className="col-10 m-auto px-4 " onSubmit={signHandler}>
-        {/* rendering of messages */}
-        <p
-          className={`text-center ${
-            msg === "Registered Successfully!!" ? "text-success" : "text-danger"
-          }`}
-        >
-          {msg}
-        </p>
         {/* dynamic rendering of signup input boxes  */}
         {signArr.map((item, i) => {
           return (

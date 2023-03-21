@@ -9,7 +9,7 @@ const HomePage = () => {
   let navigate = useNavigate();
   let location = useLocation();
   const { user, selectedChat } = ChatState();
-
+  // function checks whether someone is logged in or not if not navigates to login page
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem("loginUser"));
     if (userInfo) {
@@ -19,6 +19,7 @@ const HomePage = () => {
 
   return (
     <div className="col-12 d-flex flex-row" style={{ height: "100vh" }}>
+      {/* rendering of chats when user is logged in  */}
       {user && <Chats />}
       {selectedChat === undefined ? (
         <Box className="col-9 d-flex justify-content-center align-items-center">
@@ -29,6 +30,7 @@ const HomePage = () => {
           />
         </Box>
       ) : (
+        // rendering of chat page
         <ChatPage />
       )}
     </div>
